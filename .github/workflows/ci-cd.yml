@@ -15,30 +15,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          python-version: '3.x'
+          node-version: '16'  # Updated Node.js version
+
+      - name: Verify package.json
+        run: cat package.json  # Verify that package.json exists
 
       - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
+        run: npm install
 
       - name: Run tests
-        run: |
-          source venv/bin/activate
-          python -m unittest discover -s tests
+        run: npm test
 
       - name: Deploy to MCP Server
         run: |
-          source venv/bin/activate
-          python deploy_to_mcp.py
-        env:
-          MCP_API_URL: ${{ secrets.MCP_API_URL }}
-          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          # Add commands to deploy to MCP Server
 
       - name: Integrate with Airtable
         run: |

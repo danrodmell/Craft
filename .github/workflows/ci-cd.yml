@@ -15,13 +15,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: List directory contents
+        run: ls -la
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'  # Updated Node.js version
 
       - name: Verify package.json
-        run: cat package.json  # Verify that package.json exists
+        run: |
+          ls -la
+          cat package.json
 
       - name: Install dependencies
         run: npm install

@@ -1,56 +1,63 @@
-name: CI/CD Workflow
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  setup:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: List directory contents
-        run: ls -la
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v3
         with:
-          node-version: '16'  # Updated Node.js version
+          fetch-depth: 0
 
-      - name: Verify package.json
-        run: |
-          ls -la
-          cat package.json
+      - name: Debug: Show current directory
+        run: pwd && echo "Current directory contents:" && ls -la
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Debug: Verify package.json
+        run: echo "Checking package.json location:" && find . -name package.json && echo "Contents of package.json:" && cat package.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run tests
         run: npm test
 
-      - name: Deploy to MCP Server
-        run: |
-          # Add commands to deploy to MCP Server
+      - name: Run linting
+        run: npm run lint
 
-      - name: Integrate with Airtable
-        run: |
-          # Add commands to integrate with Airtable
+      - name: Build
+        run: npm run build
 
-      - name: Integrate with Perplexity AI
-        run: |
-          # Add commands to integrate with Perplexity AI
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up Vector Database
-        run: |
-          # Add commands to set up Vector Database
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-      - name: Deploy to production
-        if: github.ref == 'refs/heads/main'
+      - name: Install Python dependencies
         run: |
-          # Add commands to deploy to production
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Deploy to MCP
+        run: python deploy_to_mcp.py
+        env:
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}

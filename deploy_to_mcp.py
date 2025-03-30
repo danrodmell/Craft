@@ -11,6 +11,7 @@ def deploy_to_mcp_server(api_url, api_key, payload):
         print('Deployment successful!')
     else:
         print(f'Failed to deploy: {response.status_code} - {response.text}')
+    return response
 
 if __name__ == '__main__':
     api_url = os.getenv('MCP_API_URL')

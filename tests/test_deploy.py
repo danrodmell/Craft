@@ -1,3 +1,4 @@
+import requests_mock
 import unittest
 import os
 from deploy_to_mcp import deploy_to_mcp_server
@@ -18,13 +19,14 @@ class TestDeployment(unittest.TestCase):
 
     def test_deploy_to_mcp_server(self):
         """Test the deployment function with test data."""
-        # This is a basic test structure
-        # In a real implementation, you might want to mock the requests
-        # or use a test API endpoint
-        try:
-            deploy_to_mcp_server(self.api_url, self.api_key, self.test_payload)
-        except Exception as e:
-            self.fail(f"Deployment failed with error: {str(e)}")
+        with requests_mock.Mocker() as m:
+            m.post(self.api_url, json={'status': 'success'})
+
+            try:
+                response = deploy_to_mcp_server(self.api_url, self.api_key, self.test_payload)
+                self.assertEqual(response.json(), {'status': 'success'})
+            except Exception as e:
+                self.fail(f"Deployment failed with error: {str(e)}")
 
     def test_payload_structure(self):
         """Test that the payload has the correct structure."""

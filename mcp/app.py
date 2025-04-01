@@ -1,31 +1,24 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from mcp_client import MCPConfig, create_sync_client
 import os
+from mcp_server import mcp, process_context, health_check
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
 
-# Initialize MCP client
-mcp_config = MCPConfig(
-    api_key=os.getenv('MCP_API_KEY'),
-    environment=os.getenv('MCP_ENVIRONMENT', 'development')
-)
-mcp_client = create_sync_client(mcp_config)
-
 @app.route('/health', methods=['GET'])
-def health_check():
+def health():
     return jsonify({
         'status': 'ok',
         'service': 'mcp-python',
         'version': os.getenv('MCP_VERSION', '0.1.0'),
-        'mcp_status': mcp_client.health_check()
+        'mcp_status': health_check()
     })
 
 @app.route('/mcp/context', methods=['POST'])
-def process_context():
+def handle_context():
     try:
         data = request.get_json()
         query = data.get('query')
@@ -37,8 +30,8 @@ def process_context():
                 'message': 'Both query and context are required'
             }), 400
 
-        # Process context using MCP SDK
-        result = mcp_client.process_context(
+        # Process context using MCP server
+        result = process_context(
             query=query,
             context=context,
             options={

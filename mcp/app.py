@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from mcp import MCPClient, MCPConfig
+from mcp_client import MCPConfig, create_sync_client
 import os
 
 # Load environment variables
@@ -13,7 +13,7 @@ mcp_config = MCPConfig(
     api_key=os.getenv('MCP_API_KEY'),
     environment=os.getenv('MCP_ENVIRONMENT', 'development')
 )
-mcp_client = MCPClient(config=mcp_config)
+mcp_client = create_sync_client(mcp_config)
 
 @app.route('/health', methods=['GET'])
 def health_check():

@@ -46,8 +46,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: npm run build
 
-  # Only run MCP deployment on main branch
-  deploy-to-mcp:
+  deploy-to-render:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -55,17 +54,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      - name: Install curl
+        run: sudo apt-get update && sudo apt-get install -y curl
 
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Deploy to MCP
-        run: python deploy_to_mcp.py
+      - name: Deploy to Render
         env:
-          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+        run: |
+          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+            -H "accept: application/json" \
+            -H "authorization: Bearer $RENDER_API_KEY"

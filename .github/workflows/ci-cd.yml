@@ -62,6 +62,21 @@ jobs:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
-          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+          echo "Triggering deployment on Render..."
+          DEPLOY_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
             -H "accept: application/json" \
-            -H "authorization: Bearer $RENDER_API_KEY"
+            -H "authorization: Bearer $RENDER_API_KEY")
+          
+          HTTP_STATUS=$(echo "$DEPLOY_RESPONSE" | tail -n1)
+          RESPONSE_BODY=$(echo "$DEPLOY_RESPONSE" | sed '$d')
+          
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "Deployment triggered successfully!"
+            echo "Response: $RESPONSE_BODY"
+          else
+            echo "Failed to trigger deployment"
+            echo "Status code: $HTTP_STATUS"
+            echo "Response: $RESPONSE_BODY"
+            exit 1
+          fi

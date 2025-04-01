@@ -2,17 +2,12 @@ name: Python MCP Service
 
 on:
   push:
-    branches: [ main, feature/** ]
-    paths:
-      - 'mcp/**'
-      - 'requirements.txt'
-      - '.github/workflows/python-mcp.yml'
+    branches: 
+      - main
+      - feature/python-mcp
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'mcp/**'
-      - 'requirements.txt'
-      - '.github/workflows/python-mcp.yml'
+    branches: 
+      - main
 
 jobs:
   mcp-check:

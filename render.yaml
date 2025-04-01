@@ -1,11 +1,10 @@
 services:
   - type: web
     name: craft-app
-    env: node
-    plan: free
-    buildCommand: npm install && npm run build
-    startCommand: node src/index.js
     runtime: node
+    buildCommand: npm ci
+    startCommand: npm start
+    plan: free
     nodeVersion: 16
     envVars:
       - key: NODE_ENV
@@ -13,5 +12,5 @@ services:
       - key: PORT
         value: 3000
     autoDeploy: true
-    healthCheckPath: /
+    healthCheckPath: /health
     branch: main 

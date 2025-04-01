@@ -19,6 +19,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Craft API' });
 });
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
 // Error handling middleware
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {

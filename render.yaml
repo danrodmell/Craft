@@ -11,8 +11,6 @@ services:
         value: production
       - key: PORT
         value: 3000
-      - key: PYTHON_SERVICE_URL
-        value: internal://craft-mcp-service
     autoDeploy: true
     healthCheckPath: /health
     branch: main

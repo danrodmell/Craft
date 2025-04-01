@@ -4,10 +4,14 @@ services:
     env: node
     plan: free
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    startCommand: node src/index.js
+    runtime: node
+    nodeVersion: 16
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3000
     autoDeploy: true
     healthCheckPath: /
     branch: main 

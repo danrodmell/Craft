@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from mcp_protocol_sdk import MCPClient, MCPConfig
+from mcp import MCPClient, MCPConfig
 import os
 
 # Load environment variables

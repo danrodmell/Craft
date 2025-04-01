@@ -1,10 +1,9 @@
 import pytest
 import sys
 from pathlib import Path
-from unittest.mock import patch
 sys.path.append(str(Path(__file__).parent.parent))
 from app import app
-from mcp_server import process_context, health_check
+from mcp import mcp, process_context, health_check
 
 @pytest.fixture
 def client():

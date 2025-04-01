@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
-from mcp_server import mcp, process_context, health_check
+from mcp import mcp, process_context, health_check
 
 # Load environment variables
 load_dotenv()

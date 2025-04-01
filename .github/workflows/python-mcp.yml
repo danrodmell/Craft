@@ -12,9 +12,6 @@ on:
 jobs:
   mcp-check:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./mcp
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,6 +30,7 @@ jobs:
           pip install build hatchling uv-dynamic-versioning
 
       - name: Build and install MCP SDK
+        working-directory: ./mcp
         run: |
           cd vendor/mcp-protocol-sdk
           python -m build
@@ -44,6 +42,7 @@ jobs:
           pip install -e .
 
       - name: Run tests
+        working-directory: ./mcp
         env:
           MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
           MCP_ENVIRONMENT: test
@@ -51,6 +50,7 @@ jobs:
           python -m pytest tests/ -v
 
       - name: Run linting
+        working-directory: ./mcp
         run: |
           python -m flake8 . --max-line-length=88 --extend-ignore=E203
           python -m black . --check --quiet 

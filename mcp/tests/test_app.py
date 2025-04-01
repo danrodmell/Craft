@@ -1,8 +1,5 @@
 import pytest
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
-from app import app
+from mcp.app import app
 from mcp import mcp, process_context, health_check
 
 @pytest.fixture
@@ -46,7 +43,7 @@ def test_process_context_server_error(client, monkeypatch):
     def mock_process_context(*args, **kwargs):
         raise Exception("Test error")
     
-    monkeypatch.setattr('app.process_context', mock_process_context)
+    monkeypatch.setattr('mcp.app.process_context', mock_process_context)
     
     test_data = {
         'query': 'test query',

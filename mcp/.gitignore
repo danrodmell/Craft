@@ -20,6 +20,9 @@ wheels/
 *.egg
 .env
 
-# Keep vendor/mcp-protocol-sdk
+# Vendor directory except submodules
 vendor/*
-!vendor/mcp-protocol-sdk/ 
+!vendor/.gitkeep
+
+# Keep vendor/mcp-protocol-sdk
+vendor/mcp-protocol-sdk/ 

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: craft-app
+    name: craft-api
     runtime: node
     buildCommand: npm ci
     startCommand: npm start
@@ -11,6 +11,24 @@ services:
         value: production
       - key: PORT
         value: 3000
+      - key: PYTHON_SERVICE_URL
+        value: internal://craft-mcp-service
+    autoDeploy: true
+    healthCheckPath: /health
+    branch: main
+
+  - type: web
+    name: craft-mcp-service
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mcp_server.py
+    plan: free
+    pythonVersion: 3.9
+    envVars:
+      - key: PYTHON_ENV
+        value: production
+      - key: MCP_PORT
+        value: 5000
     autoDeploy: true
     healthCheckPath: /health
     branch: main 

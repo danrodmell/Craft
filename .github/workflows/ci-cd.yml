@@ -25,3 +25,18 @@ jobs:
         run: |
           node --version
           npm --version
+
+      - name: Verify package.json
+        run: |
+          if [ -f "package.json" ]; then
+            echo "✓ package.json found"
+            echo "Contents:"
+            cat package.json
+          else
+            echo "✗ package.json not found"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        if: success()
+        run: npm install

@@ -9,14 +9,22 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Debug: Show current directory
-        run: pwd && echo "Current directory contents:" && ls -la
+      - name: Debug Directory
+        run: |
+          pwd
+          echo "Current directory contents:"
+          ls -la
+          echo "Repository root contents:"
+          ls -la $GITHUB_WORKSPACE
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -24,8 +32,12 @@ jobs:
           node-version: '16'
           cache: 'npm'
 
-      - name: Debug: Verify package.json
-        run: echo "Checking package.json location:" && find . -name package.json && echo "Contents of package.json:" && cat package.json
+      - name: Verify package.json
+        run: |
+          echo "Checking package.json location:"
+          find $GITHUB_WORKSPACE -name package.json
+          echo "Contents of package.json:"
+          cat package.json
 
       - name: Install dependencies
         run: npm ci

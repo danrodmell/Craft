@@ -9,21 +9,18 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Debug Directory
         run: |
+          echo "Current working directory:"
           pwd
-          echo "Current directory contents:"
+          echo "Repository contents:"
           ls -la
-          echo "Repository root contents:"
+          echo "GitHub Workspace: $GITHUB_WORKSPACE"
+          echo "GitHub Workspace contents:"
           ls -la $GITHUB_WORKSPACE
 
       - name: Setup Node.js
@@ -31,27 +28,26 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
-
-      - name: Verify package.json
-        run: |
-          echo "Checking package.json location:"
-          find $GITHUB_WORKSPACE -name package.json
-          echo "Contents of package.json:"
-          cat package.json
+          cache-dependency-path: './package.json'
 
       - name: Install dependencies
+        working-directory: ${{ github.workspace }}
         run: npm ci
 
       - name: Run tests
+        working-directory: ${{ github.workspace }}
         run: npm test
 
       - name: Run linting
+        working-directory: ${{ github.workspace }}
         run: npm run lint
 
       - name: Build
+        working-directory: ${{ github.workspace }}
         run: npm run build
 
-  deploy:
+  # Only run MCP deployment on main branch
+  deploy-to-mcp:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'

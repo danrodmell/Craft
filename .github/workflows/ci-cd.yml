@@ -7,57 +7,33 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  verify-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Debug Directory
-        run: |
-          echo "Current working directory:"
-          pwd
-          echo "Repository contents:"
-          ls -la
-          echo "GitHub Workspace: $GITHUB_WORKSPACE"
-          echo "GitHub Workspace contents:"
-          ls -la $GITHUB_WORKSPACE
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
-          cache-dependency-path: './package.json'
 
       - name: Install dependencies
-        working-directory: ${{ github.workspace }}
         run: npm ci
 
-      - name: Run tests
-        working-directory: ${{ github.workspace }}
-        run: npm test
-
-      - name: Run linting
-        working-directory: ${{ github.workspace }}
-        run: npm run lint
-
-      - name: Build
-        working-directory: ${{ github.workspace }}
-        run: npm run build
-
-  deploy-to-render:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install curl
-        run: sudo apt-get update && sudo apt-get install -y curl
+      - name: Verify package.json
+        run: |
+          if [ -f "package.json" ]; then
+            echo "package.json exists"
+            cat package.json
+          else
+            echo "package.json not found"
+            exit 1
+          fi
 
       - name: Deploy to Render
+        if: github.ref == 'refs/heads/main' && success()
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}

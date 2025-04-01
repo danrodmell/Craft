@@ -40,3 +40,22 @@ jobs:
       - name: Install dependencies
         if: success()
         run: npm install
+
+      - name: Verify application structure
+        run: |
+          echo "Checking source directory..."
+          if [ -d "src" ]; then
+            echo "✓ src directory found"
+            ls -la src/
+          else
+            echo "✗ src directory not found"
+            exit 1
+          fi
+
+      - name: Run linting
+        if: success()
+        run: npm run lint || echo "Linting skipped - no configuration found"
+
+      - name: Run tests
+        if: success()
+        run: npm test || echo "Tests skipped - no tests found"

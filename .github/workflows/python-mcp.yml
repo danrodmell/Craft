@@ -48,7 +48,6 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}/mcp
         run: |
           python -m pytest tests/ -v
-
       - name: Run linting
         working-directory: ./mcp
         run: |

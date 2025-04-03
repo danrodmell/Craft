@@ -1,0 +1,14 @@
+README.md
+setup.py
+mcp/__init__.py
+mcp/mcp_server.py
+mcp.egg-info/PKG-INFO
+mcp.egg-info/SOURCES.txt
+mcp.egg-info/dependency_links.txt
+mcp.egg-info/requires.txt
+mcp.egg-info/top_level.txt
+mcp/mcp/__init__.py
+mcp/mcp/app.py
+mcp/tests/__init__.py
+mcp/tests/test_app.py
+tests/test_deploy.py
